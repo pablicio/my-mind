@@ -22,26 +22,51 @@ The system is optimized for **personal knowledge management**, but can be easily
 
 ## 🏗️ Project Structure
 
-```
+project_root/
+├── etl/                        # Módulos ETL (extração, transformação, carga)
+│   ├── extract/                # Extração de dados brutos (OCR, PDF, web, etc.)
+│   │   ├── pdf_to_image.py
+│   │   ├── ocr_easyocr.py
+│   │   └── file_collector.py
+│   ├── transform/              # Limpeza, normalização, split de texto
+│   │   ├── text_cleaner.py
+│   │   └── text_splitter.py
+│   ├── load/                   # Escrita em Markdown, JSON, vetores, etc.
+│   │   ├── markdown_writer.py
+│   │   └── vector_store_writer.py
+│   └── run_etl.py              # Script de orquestração da etapa ETL
+│
+├── data/                       # Dados persistentes (não versionados no Git)
+│   ├── raw/                    # PDFs, imagens e dados brutos
+│   ├── processed/              # Dados transformados
+│   └── output/                 # Saídas finais (Markdowns, JSONs, embeddings)
+│
+├── training/                   # Tudo relacionado a fine-tuning (opcional)
+│   ├── dataset_preparation.py  # Conversão para dataset de treino
+│   ├── train.py                # Script de treinamento
+│   └── checkpoints/            # Pesos treinados salvos
+│
+├── inference/                  # Pipelines de inferência / Q&A / RAG
+│   ├── rag_pipeline.py         # Busca + geração com LLM
+│   └── cli_app.py              # Interface de linha de comando (ou FastAPI, Streamlit etc.)
+│
+├── utils/                      # Funções auxiliares reutilizáveis
+│   ├── logging_utils.py
+│   ├── file_utils.py
+│   ├── config_loader.py
+│   └── sanitizers.py
+│
+├── config/                     # Configurações centralizadas
+│   ├── settings.py
+│   └── .env                    # Chaves secretas e variáveis de ambiente
+│
+├── notebooks/                  # Experimentos exploratórios (Jupyter)
+│   └── ocr_eval.ipynb
+│
+├── requirements.txt            # Dependências Python
+├── README.md
+└── main.py                     # Ponto de entrada principal (opcional)
 
-project\_root/
-├── config/
-│   └── settings.py           # Configuration parameters (paths, OCR langs, logging)
-├── extract/
-│   ├── pdf\_to\_image.py       # Convert PDF pages to images
-│   └── ocr.py                # Extract text from images using EasyOCR
-├── transform/
-│   └── text\_cleaner.py       # Optional text normalization and cleanup
-├── load/
-│   └── markdown\_writer.py    # Generate structured Markdown output
-├── utils/
-│   ├── file\_utils.py         # Directory traversal, file name sanitization, etc.
-│   └── logging\_setup.py      # Centralized logging configuration
-├── main.py                   # Orchestrates the full ETL flow
-├── requirements.txt          # Python dependencies
-└── output/                   # Markdown files generated from PDFs
-
-````
 
 ---
 
