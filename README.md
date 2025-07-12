@@ -77,8 +77,8 @@ project_root/
 ### 1. Clone and install dependencies
 
 ```bash
-git clone https://github.com/your-org/pdf-etl-pipeline.git
-cd pdf-etl-pipeline
+git clone https://github.com/pablicio/my-mind.git
+cd my-mind
 pip install -r requirements.txt
 ````
 
