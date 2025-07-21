@@ -1,12 +1,8 @@
 # main.py
+from etl.extract.smart_loader import load_document
 
-from etl.extract.pdf_to_text import convert_PDF_to_text
-import easyocr
+# Exemplo de uso
+if __name__ == '__main__':
+    raw_path = r"D:\ARQUIVOS"
 
-reader = easyocr.Reader(['en', 'pt'])  # idiomas suportados
-pdf_path = 'data/raw/A-Brief-Introduction-to-Singapore.pdf'      # caminho para o PDF
-
-text = convert_PDF_to_text(reader, pdf_path)
-
-print("Texto extraído:")
-print(text)
+    load_document(raw_path)

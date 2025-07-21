@@ -24,23 +24,28 @@ The system is optimized for **personal knowledge management**, but can be easily
 
 ```
 project_root/
-├── etl/                         # Módulos ETL (extração, transformação, carga)
-│   ├── extract/                 # Extração de dados brutos (OCR, PDF, web, etc.)
-│   │   ├── pdf_to_image.py
-│   │   ├── ocr_easyocr.py
-│   │   └── file_collector.py
-│   ├── transform/               # Limpeza, normalização, split de texto
-│   │   ├── text_cleaner.py
-│   │   └── text_splitter.py
-│   ├── load/                    # Escrita em Markdown, JSON, vetores, etc.
-│   │   ├── markdown_writer.py
-│   │   └── vector_store_writer.py
-│   └── run_etl.py               # Script de orquestração da etapa ETL
+├── etl/                         # Módulos ETL (Extração, Transformação, Carga)
+│   ├── extract/                 # Extração de dados (OCR, PDFs, arquivos, etc.)
+│   │   ├── file_collector.py    # Identifica e classifica arquivos por tipo
+│   │   ├── pdf_to_image.py      # Converte PDFs digitalizados em imagens para OCR
+│   │   ├── ocr_easyocr.py       # OCR com EasyOCR ou Tesseract
+│   │   └── smart_loader.py      # Detecta necessidade de OCR e escolhe o loader adequado (LangChain ou OCR)
+│   │
+│   ├── transform/               # Limpeza e preparação dos textos
+│   │   ├── text_cleaner.py      # Remove quebras de linha, espaços extras, símbolos
+│   │   └── text_splitter.py     # Divide texto em chunks (LangChain compatible)
+│   │
+│   ├── load/                    # Armazenamento final
+│   │   ├── markdown_writer.py   # Salva textos em arquivos Markdown
+│   │   ├── vector_store_writer.py # Salva embeddings em FAISS, Chroma, etc.
+│   │   └── json_writer.py       # Opcional: saída estruturada em JSON
+│   │
+│   └── run_etl.py               # Orquestração: pipeline única (recebe arquivo e executa todas as etapas)
 │
 ├── data/                        # Dados persistentes (não versionados no Git)
-│   ├── raw/                     # PDFs, imagens e dados brutos
-│   ├── processed/               # Dados transformados
-│   └── output/                  # Saídas finais (Markdowns, JSONs, embeddings)
+│   ├── raw/                     # Entrada: PDFs, imagens, arquivos diversos
+│   ├── processed/               # Dados intermediários transformados (texto limpo, separado)
+│   └── output/                  # Saídas finais (Markdowns, JSONs, embeddings, etc.)
 │
 ├── training/                    # Tudo relacionado a fine-tuning (opcional)
 │   ├── dataset_preparation.py   # Conversão para dataset de treino
