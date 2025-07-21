@@ -68,11 +68,13 @@ def load_document(filepath):
                 print("Ler com langhain", filepath)
         elif filepath.endswith((".png", ".jpg")):
             reader = create_easyocr_reader(['pt', 'en'])
-            texto = read_text_from_image(filepath, reader)
-            save_text_output(texto, filepath, Path(output_dir))
-            print(f"Texto extraído de {filepath}:\n{texto}")
+            texto = read_text_from_image(filepath, reader, output_dir)
+            if texto:
+                # Salva o texto extraído
+                print(f"[INFO] Salvando OCR de imagem: {filepath}")
+                save_text_output(texto, filepath, Path(output_dir))
 
-        elif filepath.endswith(".txt", ".md", ".docx"):
+        elif filepath.endswith((".txt", ".md", ".docx")):
             print("Ler com langhain", filepath)
         else:
             raise NotImplementedError("Formato ainda não suportado.")

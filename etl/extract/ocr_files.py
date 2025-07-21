@@ -19,43 +19,50 @@ def create_easyocr_reader(langs=['pt', 'en'], force_cpu=False) -> easyocr.Reader
     return easyocr.Reader(langs, gpu=use_gpu)
 
 
-def read_text_from_image(image_input, reader: easyocr.Reader, output_dir: Path = None) -> str:
+def read_text_from_image(image_input, reader: easyocr.Reader, output_dir: Path = None, image_name=None) -> str:
     """
-    Executa OCR em uma imagem e salva/recupera resultado se output_dir for fornecido.
+    Executa OCR em uma imagem e salva/recupera o resultado (cache simples).
 
     Args:
-        image_input: caminho da imagem (str ou Path) ou array numpy da imagem.
-        reader: instância easyocr.Reader.
-        output_dir: Pasta onde salvar texto OCR (opcional).
+        image_input: Caminho da imagem (str/Path) ou imagem como array numpy.
+        reader: Instância do easyocr.Reader.
+        output_dir: Pasta para salvar o texto OCR (opcional).
+        image_name: Nome alternativo (usado se image_input for array).
 
     Returns:
-        str: Texto extraído da imagem.
+        Texto extraído da imagem ou False se já existir.
     """
+    img_np = None
     image_path = None
+
+    # Detecta tipo de entrada
     if isinstance(image_input, (str, Path)):
         image_path = Path(image_input)
-        img_np = np.array(Image.open(str(image_path)))
-    else:
+        img = Image.open(image_path).convert("RGB")
+        img_np = np.array(img)
+    elif isinstance(image_input, np.ndarray):
         img_np = image_input
+        if image_name:
+            image_path = Path(image_name)
+    else:
+        raise ValueError("image_input deve ser caminho ou numpy array")
 
+    # Cache: pula se já existe
     if output_dir and image_path:
+        output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        output_file = output_dir / f"{image_path.stem}_ocr.txt"
+        output_file = output_dir / f"{image_path.stem}_ocr.md"
         if output_file.exists():
-            msg = f"[SKIP] OCR já existe: {output_file.name}"
-            print(msg)
-            logging.info(msg)
-            return output_file.read_text(encoding='utf-8')
+            print(f"[SKIP] OCR já existe: {output_file.name}")
+            return False
 
+    # Executa OCR
+    logging.info(f"[OCR] Processando: {image_path.name if image_path else 'imagem sem nome'}")
     results = reader.readtext(img_np)
-    words = [word for _, word, _ in results]
-    text = " ".join(words)
-
-    if output_dir and image_path:
-        output_file.write_text(text, encoding='utf-8')
-        logging.info(f"[OK] OCR salvo: {output_file.name}")
+    text = " ".join([word for _, word, _ in results])
 
     return text
+
 
 def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     """
@@ -71,7 +78,7 @@ def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     """
     source_path = Path(source_path)  # <- Corrige o erro
     output_dir.mkdir(parents=True, exist_ok=True)
-    output_file = output_dir / f"{source_path.stem}_ocr.txt"
+    output_file = output_dir / f"{source_path.stem}_ocr.md"
     output_file.write_text(text, encoding='utf-8')
     logging.info(f"[OK] Texto salvo em: {output_file}")
     return output_file
@@ -91,7 +98,7 @@ def convert_pdf_to_text(pdf_path: str, output_dir: str, langs=['pt', 'en']) -> s
     """
     pdf_path = Path(pdf_path)
     output_dir = Path(output_dir)
-    output_file = output_dir / f"{pdf_path.stem}_ocr.txt"
+    output_file = output_dir / f"{pdf_path.stem}_ocr.md"
 
     if output_file.exists():
         logging.info(f"OCR já realizado. Pulando: {output_file.name}")
@@ -107,12 +114,12 @@ def convert_pdf_to_text(pdf_path: str, output_dir: str, langs=['pt', 'en']) -> s
     for i, image in enumerate(images, 1):
         logging.info(f"Pág {i}/{len(images)}")
         try:
-            text = read_text_from_image(np.array(image), reader)
+            text = read_text_from_image(np.array(image), reader, output_dir, image_name=f"{pdf_path.stem}_page_{i}")
         except RuntimeError as e:
             logging.error(f"Erro na página {i}: {e}")
             logging.info("Tentando fallback para CPU...")
             reader = create_easyocr_reader(langs, force_cpu=True)
-            text = read_text_from_image(np.array(image), reader)
+            text = read_text_from_image(np.array(image), reader, output_dir, image_name=f"{pdf_path.stem}_page_{i}")
         all_texts.append(text)
 
     full_text = "\n\n".join(all_texts)
