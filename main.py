@@ -3,6 +3,12 @@ from etl.extract.smart_loader import load_document
 
 # Exemplo de uso
 if __name__ == '__main__':
-    raw_path = r"D:\ARQUIVOS"
+    # Lista de diretórios ou arquivos
+    paths = [
+        r"D:\ARQUIVOS",
+        r"D:\Workspace\NOTAS\GST"
+    ]
 
-    load_document(raw_path)
+    # Executa para cada caminho
+    for path in paths:
+        load_document(path)

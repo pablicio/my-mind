@@ -18,8 +18,7 @@ def create_easyocr_reader(langs=['pt', 'en'], force_cpu=False) -> easyocr.Reader
     logging.info(f"Instanciando EasyOCR (GPU={use_gpu})...")
     return easyocr.Reader(langs, gpu=use_gpu)
 
-
-def read_text_from_image(image_input, reader: easyocr.Reader, output_dir: Path = None, image_name=None) -> str:
+def read_text_from_image(image_input, output_dir: Path = None, image_name=None) -> str:
     """
     Executa OCR em uma imagem e salva/recupera o resultado (cache simples).
 
@@ -58,11 +57,12 @@ def read_text_from_image(image_input, reader: easyocr.Reader, output_dir: Path =
 
     # Executa OCR
     logging.info(f"[OCR] Processando: {image_path.name if image_path else 'imagem sem nome'}")
+    reader = create_easyocr_reader(['pt', 'en'])
     results = reader.readtext(img_np)
+    
     text = " ".join([word for _, word, _ in results])
 
     return text
-
 
 def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     """
@@ -82,7 +82,6 @@ def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     output_file.write_text(text, encoding='utf-8')
     logging.info(f"[OK] Texto salvo em: {output_file}")
     return output_file
-
 
 def convert_pdf_to_text(pdf_path: str, output_dir: str, langs=['pt', 'en']) -> str:
     """

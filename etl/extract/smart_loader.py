@@ -67,8 +67,7 @@ def load_document(filepath):
                 # return load_with_langchain(filepath)
                 print("Ler com langhain", filepath)
         elif filepath.endswith((".png", ".jpg")):
-            reader = create_easyocr_reader(['pt', 'en'])
-            texto = read_text_from_image(filepath, reader, output_dir)
+            texto = read_text_from_image(filepath, output_dir)
             if texto:
                 # Salva o texto extraído
                 print(f"[INFO] Salvando OCR de imagem: {filepath}")
