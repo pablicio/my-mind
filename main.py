@@ -5,6 +5,7 @@ from etl.extract.smart_loader import load_document
 if __name__ == '__main__':
     # Lista de diretórios ou arquivos
     paths = [
+        r"D:\ARQUIVOS\ML BOOKS",
         r"D:\ARQUIVOS",
         r"D:\Workspace\NOTAS\GST"
     ]

@@ -2,9 +2,14 @@
 import os
 from typing import List
 from PyPDF2 import PdfReader
-from utils.directory import sanitize_filename
-from etl.extract.ocr_files import read_text_from_image, create_easyocr_reader, save_text_output, convert_pdf_to_text
+from etl.extract.ocr_files import read_text_from_image, convert_pdf_to_text
 from pathlib import Path
+from langchain_community.document_loaders import (
+    PyPDFLoader,
+    TextLoader,
+    UnstructuredWordDocumentLoader,
+    UnstructuredEPubLoader
+)
 
 def collect_files(directory: str, extensions: List[str] = None) -> List[str]:
     """
@@ -52,28 +57,48 @@ def is_scanned_pdf(filepath: str, max_pages: int = 3) -> bool:
         print(f"[ERRO] Falha ao ler PDF '{filepath}': {e}")
         return True  # Por segurança, assume que precisa de OCR
 
-def load_document(filepath):
+def load_document(filepath, output_dir=r"C:\projetos\IA\my-mind\data\output"):
+    """
+    Carrega e processa documentos de diferentes formatos:
+    - PDFs escaneados são processados com OCR
+    - PDFs normais e outros formatos são delegados a loaders apropriados
+    - Imagens recebem OCR direto
+    """
+    
+    supported_extensions = {
+        ".pdf": PyPDFLoader,
+        ".txt": TextLoader,
+        ".epub": UnstructuredEPubLoader,
+        ".docx": UnstructuredWordDocumentLoader,
+        ".doc": UnstructuredWordDocumentLoader,
+    }
 
-    files = collect_files(filepath, extensions=[".pdf", ".jpg", ".png", ".md"])
-    output_dir = r"C:\projetos\IA\my-mind\data\output"
+    files = collect_files(filepath, extensions=[".pdf", ".jpg", ".png", ".txt", ".docx"])
 
-    for filepath in files:
-        if sanitize_filename(filepath).endswith(".pdf"):
-            if is_scanned_pdf(filepath):
-                # Converte PDF em imagens e aplica OCR
-                convert_pdf_to_text(filepath, output_dir)
+    for file in files:
+        ext = Path(file).suffix.lower()
+
+        if ext == ".pdf":
+            if is_scanned_pdf(file):
+                convert_pdf_to_text(file, output_dir)  # OCR para PDFs escaneados
             else:
-                # Usa LangChain PyPDFLoader
-                # return load_with_langchain(filepath)
-                print("Ler com langhain", filepath)
-        elif filepath.endswith((".png", ".jpg")):
-            texto = read_text_from_image(filepath, output_dir)
-            if texto:
-                # Salva o texto extraído
-                print(f"[INFO] Salvando OCR de imagem: {filepath}")
-                save_text_output(texto, filepath, Path(output_dir))
+                loader = supported_extensions.get(ext)
+                if loader:
+                    print(f"[Loader] PDF normal: {file}")
+                    text = ''.join(doc.page_content for doc in loader(file).load()) 
+                    safe_text = text.encode('utf-8', errors='ignore').decode('utf-8')
 
-        elif filepath.endswith((".txt", ".md", ".docx")):
-            print("Ler com langhain", filepath)
+                    print(f"[Loader] PDF carregado: { safe_text }" )
+                else:
+                    raise NotImplementedError(f"Loader não disponível para {ext}")
+
+        elif ext in [".png", ".jpg"]:
+            read_text_from_image(file, output_dir)
+
+        elif ext in supported_extensions:
+            print(f"[Loader] Texto estruturado: {file}")
+            loader = supported_extensions[ext]
+            loader(file).load()
+
         else:
-            raise NotImplementedError("Formato ainda não suportado.")
+            raise NotImplementedError(f"Formato ainda não suportado: {ext}")

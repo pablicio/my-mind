@@ -61,6 +61,7 @@ def read_text_from_image(image_input, output_dir: Path = None, image_name=None) 
     results = reader.readtext(img_np)
     
     text = " ".join([word for _, word, _ in results])
+    save_text_output(text, image_input, Path(output_dir))
 
     return text
 
