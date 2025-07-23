@@ -218,6 +218,3 @@ Made with ❤️ by \[Thiago Pablicio]
 🔗 GitHub: [github.com/pablicio](https://github.com/pablicio)
 🔗 LinkedIn: [Thiago Pablicio](https://www.linkedin.com/in/thiago-pablicio-86357446/)
 
----
-
-Se quiser, posso também gerar um diagrama `.svg` com base nessa documentação. Deseja isso?
