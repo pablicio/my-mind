@@ -1,22 +1,31 @@
-# My Mind
+---
+
+# 🧠 My Mind
 
 ## 🤖 LLM-Powered PDF & Notes ETL Pipeline (Python)
 
-This project provides a **modular ETL pipeline** in Python that transforms raw PDF files — including scanned images — into structured Markdown files. These can be used as **contextual data sources for LLM-based systems** (e.g. retrieval-augmented generation, semantic search, assistants, or chatbots).
+**My Mind** is a modular **ETL pipeline** for extracting, cleaning, and transforming PDF documents (both digital and scanned) into structured **Markdown files**. These files can be used as contextual data for **LLM-powered applications** such as:
 
-The system is optimized for **personal knowledge management**, but can be easily scaled to support **enterprise document processing**.
+* Retrieval-Augmented Generation (RAG)
+* Semantic search
+* Personal assistants or chatbots
+* Custom knowledge bases
 
+Optimized for **personal knowledge management**, but easily extendable to **enterprise-scale document processing**.
+
+---
 
 ## 🎯 Key Features
 
-- ✅ Extracts text from both digital and scanned PDFs using **EasyOCR**
-- ✅ Converts pages to images for OCR using **pdf2image** or **PyMuPDF**
-- ✅ Cleans and normalizes text before saving it to `.md` files
-- ✅ Supports recursive folder traversal
-- ✅ Uses **LangChain + OpenAI** to embed content (optional)
-- ✅ Modular architecture for ETL: `extract/`, `transform/`, `load/`, `utils/`, `config/`
-- ✅ Automatic temporary file cleanup
-- ✅ Logs errors and processes robustly, PDF-by-PDF
+* ✅ Supports both **scanned** and **text-based PDFs**
+* ✅ OCR powered by **EasyOCR** with GPU fallback
+* ✅ Converts PDFs to images via **pdf2image**
+* ✅ Intelligent file loader: detects OCR vs structured extraction
+* ✅ Modular ETL folders: `extract/`, `transform/`, `load/`, `utils/`
+* ✅ Saves cleaned, structured Markdown files with metadata
+* ✅ Optional embedding pipeline using **LangChain + OpenAI**
+* ✅ Robust logging and error handling (PDF-by-PDF)
+* ✅ Automatic cleanup of temporary files
 
 ---
 
@@ -24,149 +33,144 @@ The system is optimized for **personal knowledge management**, but can be easily
 
 ```
 project_root/
-├── etl/                         # Módulos ETL (Extração, Transformação, Carga)
-│   ├── extract/                 # Extração de dados (OCR, PDFs, arquivos, etc.)
-│   │   ├── loader_files.py      # Identifica e classifica arquivos por tipo
-│   │   ├── ocr_files.py         # Converte PDFs digitalizados em imagens para OCR
-│   │   └── smart_loader.py      # Detecta necessidade de OCR e escolhe o loader adequado (LangChain ou OCR)
+├── etl/                         
+│   ├── extract/                 # File type detection, OCR and loader logic
+│   │   ├── loader_files.py         # Loads structured documents (Text, Docx, Epub, etc.)
+│   │   ├── ocr_files.py            # OCR pipeline for images and scanned PDFs
+│   │   └── smart_loader.py        # Main controller (decides loader vs OCR)
 │   │
-│   ├── transform/               # Limpeza e preparação dos textos
-│   │   ├── text_cleaner.py      # Remove quebras de linha, espaços extras, símbolos
-│   │   └── text_splitter.py     # Divide texto em chunks (LangChain compatible)
+│   ├── transform/               # Text preprocessing
+│   │   ├── text_cleaner.py         # Cleans newlines, symbols, whitespace
+│   │   └── text_splitter.py        # Splits long texts into chunks
 │   │
-│   ├── load/                    # Armazenamento final
-│   │   ├── markdown_writer.py   # Salva textos em arquivos Markdown
-│   │   ├── vector_writer.py     # Salva embeddings em FAISS, Chroma, etc.
-│   │   └── json_writer.py       # Opcional: saída estruturada em JSON
+│   ├── load/                    # Output persistence
+│   │   ├── markdown_writer.py      # Saves as `.md` with metadata
+│   │   ├── vector_writer.py        # Optional vector DB embedding (FAISS, Chroma)
+│   │   └── json_writer.py          # Optional JSON export
 │   │
-│   └── run_etl.py               # Orquestração: pipeline única (recebe arquivo e executa todas as etapas)
+│   └── run_etl.py              # Main pipeline runner script
 │
-├── data/                        # Dados persistentes (não versionados no Git)
-│   ├── raw/                     # Entrada: PDFs, imagens, arquivos diversos
-│   ├── processed/               # Dados intermediários transformados (texto limpo, separado)
-│   └── output/                  # Saídas finais (Markdowns, JSONs, embeddings, etc.)
+├── data/                       
+│   ├── raw/                        # Input documents (PDFs, images)
+│   ├── processed/                 # Cleaned intermediate texts
+│   └── output/                    # Final `.md`, `.json`, embeddings, etc.
 │
-├── training/                    # Tudo relacionado a fine-tuning (opcional)
-│   ├── dataset_preparation.py   # Conversão para dataset de treino
-│   ├── train.py                 # Script de treinamento
-│   └── checkpoints/             # Pesos treinados salvos
+├── training/                    # Optional fine-tuning support
+│   ├── dataset_preparation.py      # Converts extracted data into training-ready format
+│   ├── train.py                    # Fine-tunes models (e.g. LLaMA, GPT)
+│   └── checkpoints/               # Saved model weights
 │
-├── inference/                   # Pipelines de inferência / Q&A / RAG
-│   ├── rag_pipeline.py          # Busca + geração com LLM
-│   └── cli_app.py               # Interface de linha de comando (ou FastAPI, Streamlit etc.)
+├── inference/                   # RAG-ready serving interface
+│   ├── rag_pipeline.py             # Query + retrieval + generation logic
+│   └── cli_app.py                  # CLI or web interface (Streamlit/FastAPI)
 │
-├── utils/                       # Funções auxiliares reutilizáveis
+├── utils/                       # Reusable helpers
 │   ├── logging_utils.py
 │   ├── file_utils.py
 │   ├── config_loader.py
 │   └── sanitizers.py
 │
-├── config/                      # Configurações centralizadas
-│   ├── settings.py
-│   └── .env                     # Chaves secretas e variáveis de ambiente
+├── config/                     
+│   ├── settings.py                 # Central pipeline settings
+│   └── .env                        # API keys and secrets
 │
-├── notebooks/                   # Experimentos exploratórios (Jupyter)
+├── notebooks/                   # Jupyter notebooks for testing and exploration
 │   └── ocr_eval.ipynb
 │
-├── requirements.txt             # Dependências Python
+├── requirements.txt             
 ├── README.md
-└── main.py                      # Ponto de entrada principal (opcional)
-
-````
+└── main.py                      # Entry point for full pipeline execution
+```
 
 ---
 
-## ⚙️ Setup Instructions
+## ⚙️ Getting Started
 
-### 1. Clone and install dependencies
+### 1. Install dependencies
 
 ```bash
 git clone https://github.com/pablicio/my-mind.git
 cd my-mind
 pip install -r requirements.txt
-````
-
-### 2. Configure your `.env` (for OpenAI, if using embeddings)
-
-Create a `.env` file in the project root:
-
 ```
+
+### 2. Set up `.env` (Optional for embeddings)
+
+Create a `.env` file in the root folder:
+
+```env
 OPENAI_API_KEY=sk-...
 ```
 
-### 3. Configure pipeline settings
+### 3. Configure the pipeline
 
-Edit `config/settings.py` to adjust:
+Edit the config file `config/settings.py`:
 
 ```python
 input_dir = "input/"
 output_dir = "output/"
-ocr_languages = ['en', 'pt']  # EasyOCR supported languages
-chunk_size = 1000             # For LangChain chunking (optional)
+ocr_languages = ['pt', 'en']
+chunk_size = 1000
 chunk_overlap = 100
 ```
 
 ---
 
-## 🧠 How It Works
+## 🔁 Pipeline Overview
 
-### 📥 Extraction Phase (`extract/`)
+### 📥 Extraction (`etl/extract/`)
 
-* `pdf_to_image.py`: Converts every PDF page into a high-res `.png` image
-* `ocr.py`: Uses EasyOCR to read text from each image
+* Uses EasyOCR to extract text from scanned images or PDFs
+* Auto-selects loader based on file type
+* PDF scanned vs structured is detected dynamically
+* Text files (.txt, .docx, .epub) use LangChain-compatible loaders
 
-### 🧹 Transformation Phase (`transform/`)
+### 🧹 Transformation (`etl/transform/`)
 
-* `text_cleaner.py`: Optional cleaning (e.g., remove artifacts, normalize unicode)
+* Cleans and normalizes extracted text
+* Optionally splits into chunks for embedding
 
-### 📤 Load Phase (`load/`)
+### 📤 Load (`etl/load/`)
 
-* `markdown_writer.py`: Writes one `.md` file per PDF with sections per page
-* Output example:
+* Saves Markdown (`.md`) files with YAML frontmatter
+* Optionally embeds content into FAISS or Chroma vector stores
 
-  ```markdown
-  ---
-  pdf: my_report.pdf
-  pages: 5
-  ---
-  ## Page 1
-  (text here)
-  ## Page 2
-  (text here)
-  ```
+Example Markdown output:
+
+```markdown
+---
+source: example.pdf
+pages: 4
+processed: 2025-07-22
+---
+
+## Page 1
+(Text here...)
+
+## Page 2
+(Next page...)
+```
 
 ---
 
-## 🧪 Running the Pipeline
-
-Use the following command to process all PDFs:
+## 🧪 Run the Pipeline
 
 ```bash
 python main.py
 ```
 
-Each PDF will be:
+Each file will be:
 
-1. Converted to images
-2. Processed with OCR
-3. Converted into clean Markdown
-4. Saved in the `/output` folder
-
-All temporary files are cleaned up automatically.
+1. Checked for OCR or loader-based extraction
+2. Converted (if needed) to image
+3. Processed and cleaned
+4. Saved as `.md` (optionally embedded)
 
 ---
 
-## 📌 Error Handling & Logging
+## 🧠 Optional Embeddings (LangChain + OpenAI)
 
-* All processing steps are wrapped in `try/except` blocks.
-* Errors are logged using Python's `logging` module (`pipeline.log`).
-* Faulty PDFs are skipped, the pipeline continues.
-
----
-
-## 🔗 Optional: Embedding with LangChain + OpenAI
-
-To enable document chunking and embeddings (e.g. for vector storage):
+Add this to generate embeddings:
 
 ```python
 from langchain.embeddings import OpenAIEmbeddings
@@ -176,45 +180,47 @@ embeddings = OpenAIEmbeddings()
 db = FAISS.from_texts(text_chunks, embeddings)
 ```
 
-This allows the Markdown chunks to be embedded and queried in a RAG pipeline.
-
 ---
 
-## 🧠 Use Cases
+## 🔍 Use Cases
 
-* 🧘 Personal LLM-powered assistants
-* 📂 Semantic search over your notes
-* 📑 Legal or HR document processors
-* 🤖 Enterprise knowledge bots
-* 📝 Structured summarization from PDFs
+* 📖 Knowledge assistants over personal PDFs
+* 🔎 Semantic search for enterprise documents
+* 🧘‍♀️ Life-logging and memory augmentation
+* 🧾 Legal, financial, academic file indexing
+* 💬 Natural-language document Q\&A
 
 ---
 
 ## 🛣️ Roadmap
 
-* [ ] Add Whisper transcription support for audio PDFs
-* [ ] Add front-end drag-and-drop web interface
-* [ ] Integrate with vector DBs (Weaviate, Pinecone, Qdrant)
-* [ ] Export to other formats (JSON, CSV, Obsidian vault)
+* [ ] Whisper support for audio-based PDFs
+* [ ] Web UI with file upload
+* [ ] Vector DB integration (Weaviate, Pinecone, Qdrant)
+* [ ] Obsidian vault export
+* [ ] Metadata tagging + chunk filtering
 
 ---
 
 ## 📄 License
 
-MIT License. Feel free to use, fork, and adapt.
+MIT License — free for personal and commercial use.
 
 ---
 
-## 🙋‍♂️ Contributing
+## 🤝 Contributing
 
-Pull requests are welcome. For major changes, open an issue first to discuss the direction.
+PRs are welcome! For feature requests or improvements, feel free to open an issue.
 
 ---
 
-## 👋 Contact
+## 👋 Author
 
-Made with ❤️ by \[Your Name]
-📬 Email: [your@email.com](mailto:your@email.com)
-🌐 Linkedin: [https://github.com/yourusername](https://github.com/yourusername)
+Made with ❤️ by \[Thiago Pablicio]
+📧 Email: [pabliciotjg@gmail.com)](mailto:pabliciotjg@gmail.com)
+🔗 GitHub: [github.com/pablicio](https://github.com/pablicio)
+🔗 LinkedIn: [Thiago Pablicio](https://www.linkedin.com/in/thiago-pablicio-86357446/)
 
+---
 
+Se quiser, posso também gerar um diagrama `.svg` com base nessa documentação. Deseja isso?

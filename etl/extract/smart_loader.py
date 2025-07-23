@@ -93,7 +93,7 @@ def load_document(filepath: str, output_dir: str = r"C:\projetos\IA\my-mind\data
 
         # Imagens: processa com OCR direto
         elif ext in [".png", ".jpg"]:
-            read_text_from_image(file, output_dir)
+            read_text_from_image(file, output_dir=output_dir)
 
         # Arquivos estruturados: loaders padrão
         elif ext in supported_extensions:
