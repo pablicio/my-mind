@@ -1,5 +1,3 @@
----
-
 # 🧠 My Mind
 
 ## 🤖 LLM-Powered PDF & Notes ETL Pipeline (Python)
@@ -14,7 +12,6 @@
 Optimized for **personal knowledge management**, but easily extendable to **enterprise-scale document processing**.
 
 ---
-
 ## 🎯 Key Features
 
 * ✅ Supports both **scanned** and **text-based PDFs**
