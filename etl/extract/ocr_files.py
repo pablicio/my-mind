@@ -101,7 +101,7 @@ def convert_pdf_to_text(pdf_path: str, output_dir: str, langs=['pt', 'en']) -> s
     output_file = output_dir / f"{pdf_path.stem}_ocr.md"
 
     if output_file.exists():
-        logging.info(f"OCR já realizado. Pulando: {output_file.name}")
+        print(f"[SKIP] OCR já realizado. Pulando: {output_file.name}")
         return output_file.read_text(encoding='utf-8')
 
     reader = create_easyocr_reader(langs)

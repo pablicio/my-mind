@@ -3,6 +3,8 @@ import os
 from typing import List
 from PyPDF2 import PdfReader
 from etl.extract.ocr_files import read_text_from_image, convert_pdf_to_text
+from etl.extract.loader_files import load_text_with_loader
+
 from pathlib import Path
 from langchain_community.document_loaders import (
     PyPDFLoader,
@@ -82,15 +84,7 @@ def load_document(filepath, output_dir=r"C:\projetos\IA\my-mind\data\output"):
             if is_scanned_pdf(file):
                 convert_pdf_to_text(file, output_dir)  # OCR para PDFs escaneados
             else:
-                loader = supported_extensions.get(ext)
-                if loader:
-                    print(f"[Loader] PDF normal: {file}")
-                    text = ''.join(doc.page_content for doc in loader(file).load()) 
-                    safe_text = text.encode('utf-8', errors='ignore').decode('utf-8')
-
-                    print(f"[Loader] PDF carregado: { safe_text }" )
-                else:
-                    raise NotImplementedError(f"Loader não disponível para {ext}")
+                load_text_with_loader(file, ext, supported_extensions, output_dir)
 
         elif ext in [".png", ".jpg"]:
             read_text_from_image(file, output_dir)
@@ -102,3 +96,5 @@ def load_document(filepath, output_dir=r"C:\projetos\IA\my-mind\data\output"):
 
         else:
             raise NotImplementedError(f"Formato ainda não suportado: {ext}")
+        
+        

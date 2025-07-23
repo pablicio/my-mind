@@ -1,6 +1,5 @@
 # utils/file_utils.py
 
-import os
 import re
 from pathlib import Path
 
@@ -31,7 +30,6 @@ def sanitize_filename(filename: str) -> str:
     Invalid chars include: <>:"/\|?* and control chars.
     """
     return re.sub(r'[<>:"/\\|?*\x00-\x1F]', '_', filename)
-
 
 # --------------------------
 # Exemplo de uso
