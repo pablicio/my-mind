@@ -26,9 +26,8 @@ The system is optimized for **personal knowledge management**, but can be easily
 project_root/
 ├── etl/                         # Módulos ETL (Extração, Transformação, Carga)
 │   ├── extract/                 # Extração de dados (OCR, PDFs, arquivos, etc.)
-│   │   ├── file_collector.py    # Identifica e classifica arquivos por tipo
-│   │   ├── pdf_to_image.py      # Converte PDFs digitalizados em imagens para OCR
-│   │   ├── ocr_easyocr.py       # OCR com EasyOCR ou Tesseract
+│   │   ├── loader_files.py      # Identifica e classifica arquivos por tipo
+│   │   ├── ocr_files.py         # Converte PDFs digitalizados em imagens para OCR
 │   │   └── smart_loader.py      # Detecta necessidade de OCR e escolhe o loader adequado (LangChain ou OCR)
 │   │
 │   ├── transform/               # Limpeza e preparação dos textos
@@ -37,7 +36,7 @@ project_root/
 │   │
 │   ├── load/                    # Armazenamento final
 │   │   ├── markdown_writer.py   # Salva textos em arquivos Markdown
-│   │   ├── vector_store_writer.py # Salva embeddings em FAISS, Chroma, etc.
+│   │   ├── vector_writer.py     # Salva embeddings em FAISS, Chroma, etc.
 │   │   └── json_writer.py       # Opcional: saída estruturada em JSON
 │   │
 │   └── run_etl.py               # Orquestração: pipeline única (recebe arquivo e executa todas as etapas)

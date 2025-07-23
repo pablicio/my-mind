@@ -1,3 +1,28 @@
-easyocr
-pdf2image
-Pillow
+langchain==0.1.14
+langchain-community==0.0.27
+openai==1.30.1
+tiktoken==0.6.0
+
+# OCR e PDF
+easyocr==1.7.1
+pdf2image==1.16.3
+Pillow==10.3.0
+PyMuPDF==1.24.1  # para PDFs (opcional para scanned OCR)
+pytesseract==0.3.10
+
+# RAG e carregamento de documentos
+unstructured[all-docs]==0.11.6
+pypdf==4.1.0
+docx2txt==0.8
+python-docx==1.1.2
+
+# Transformações e manipulação
+pandas==2.2.2
+numpy==1.26.4
+
+# Suporte a paths, encoding e detecção
+charset-normalizer==3.3.2
+python-dotenv==1.0.1
+
+# Extra para dev
+rich==13.7.1

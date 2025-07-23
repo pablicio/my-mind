@@ -1,11 +1,11 @@
-# etl/extract/smart_loader.py
 import os
 from typing import List
-from PyPDF2 import PdfReader
-from etl.extract.ocr_files import read_text_from_image, convert_pdf_to_text
-from etl.extract.loader_files import load_text_with_loader
-
 from pathlib import Path
+from PyPDF2 import PdfReader
+
+from etl.extract.ocr_files import read_text_from_image, convert_pdf_to_text
+from etl.extract.loader_files import load_text_with_loader, load_non_pdf_text
+
 from langchain_community.document_loaders import (
     PyPDFLoader,
     TextLoader,
@@ -33,10 +33,11 @@ def collect_files(directory: str, extensions: List[str] = None) -> List[str]:
 
     return file_paths
 
+
 def is_scanned_pdf(filepath: str, max_pages: int = 3) -> bool:
     """
     Verifica se um PDF contém texto selecionável.
-    
+
     Args:
         filepath (str): Caminho do arquivo PDF.
         max_pages (int): Número máximo de páginas a verificar.
@@ -50,7 +51,7 @@ def is_scanned_pdf(filepath: str, max_pages: int = 3) -> bool:
             if i >= max_pages:
                 break
             text = page.extract_text()
-            if text and text.strip():  # Texto não vazio
+            if text and text.strip():
                 return False  # Contém texto
 
         return True  # Nenhuma página com texto
@@ -59,14 +60,16 @@ def is_scanned_pdf(filepath: str, max_pages: int = 3) -> bool:
         print(f"[ERRO] Falha ao ler PDF '{filepath}': {e}")
         return True  # Por segurança, assume que precisa de OCR
 
-def load_document(filepath, output_dir=r"C:\projetos\IA\my-mind\data\output"):
+
+def load_document(filepath: str, output_dir: str = r"C:\projetos\IA\my-mind\data\output"):
     """
     Carrega e processa documentos de diferentes formatos:
     - PDFs escaneados são processados com OCR
-    - PDFs normais e outros formatos são delegados a loaders apropriados
-    - Imagens recebem OCR direto
+    - PDFs normais e arquivos estruturados são carregados com loaders
+    - Imagens são processadas com OCR direto
+    - Demais formatos são carregados com loaders padrão
+
     """
-    
     supported_extensions = {
         ".pdf": PyPDFLoader,
         ".txt": TextLoader,
@@ -75,26 +78,28 @@ def load_document(filepath, output_dir=r"C:\projetos\IA\my-mind\data\output"):
         ".doc": UnstructuredWordDocumentLoader,
     }
 
-    files = collect_files(filepath, extensions=[".pdf", ".jpg", ".png", ".txt", ".docx"])
+    valid_exts = [".pdf", ".jpg", ".png", ".txt", ".docx"]
+    files = collect_files(filepath, extensions=valid_exts)
 
     for file in files:
         ext = Path(file).suffix.lower()
 
+        # PDFs: decide entre OCR e loader tradicional
         if ext == ".pdf":
             if is_scanned_pdf(file):
-                convert_pdf_to_text(file, output_dir)  # OCR para PDFs escaneados
+                convert_pdf_to_text(file, output_dir)
             else:
                 load_text_with_loader(file, ext, supported_extensions, output_dir)
 
+        # Imagens: processa com OCR direto
         elif ext in [".png", ".jpg"]:
             read_text_from_image(file, output_dir)
 
+        # Arquivos estruturados: loaders padrão
         elif ext in supported_extensions:
-            print(f"[Loader] Texto estruturado: {file}")
-            loader = supported_extensions[ext]
-            loader(file).load()
+            loader_class = supported_extensions[ext]
+            load_non_pdf_text(file, loader_class, output_dir=output_dir)
 
+        # Qualquer outro tipo: erro explícito
         else:
             raise NotImplementedError(f"Formato ainda não suportado: {ext}")
-        
-        
