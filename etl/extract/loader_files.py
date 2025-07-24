@@ -2,7 +2,6 @@ from pathlib import Path
 from langchain_community.document_loaders import TextLoader
 from etl.extract.ocr_files import save_text_output
 
-
 def load_text_with_loader(file_path, ext, supported_extensions, output_dir=None):
     """
     Carrega texto usando o loader apropriado baseado na extensão do arquivo.
@@ -43,7 +42,6 @@ def load_text_with_loader(file_path, ext, supported_extensions, output_dir=None)
 
     print(f"[Loader] {ext.upper()} carregado (sem salvar)")
     return safe_text
-
 
 def load_non_pdf_text(file_path: str, loader_class, output_dir: Path = None) -> str:
     """

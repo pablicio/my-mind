@@ -1,11 +1,11 @@
-from pathlib import Path
 import numpy as np
 import easyocr
 import torch
 import logging
-from PIL import Image
 import time
 import fitz
+from pathlib import Path
+from PIL import Image
 from io import BytesIO
 from concurrent.futures import ProcessPoolExecutor, as_completed, TimeoutError
 
@@ -14,7 +14,6 @@ logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
 def has_gpu() -> bool:
     """Verifica se CUDA GPU está disponível."""
     return torch.cuda.is_available()
-
 
 def create_easyocr_reader(langs=['pt', 'en'], force_cpu=False) -> easyocr.Reader:
     """
@@ -30,7 +29,6 @@ def create_easyocr_reader(langs=['pt', 'en'], force_cpu=False) -> easyocr.Reader
     use_gpu = has_gpu() and not force_cpu
     logging.info(f"Instanciando EasyOCR (GPU={use_gpu})...")
     return easyocr.Reader(langs, gpu=use_gpu)
-
 
 def read_text_from_image(image_input, output_dir: Path = None, image_name=None) -> str:
     """
@@ -106,7 +104,6 @@ def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     output_file.write_text(text, encoding='utf-8')
     logging.info(f"[OK] Texto salvo em: {output_file}")
     return output_file
-
 
 def _ocr_page_bytes(i, image_bytes, langs, force_cpu):
     start = time.perf_counter()

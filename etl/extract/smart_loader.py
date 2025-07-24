@@ -33,7 +33,6 @@ def collect_files(directory: str, extensions: List[str] = None) -> List[str]:
 
     return file_paths
 
-
 def is_scanned_pdf(filepath: str, max_pages: int = 3) -> bool:
     """
     Verifica se um PDF contém texto selecionável.
@@ -59,7 +58,6 @@ def is_scanned_pdf(filepath: str, max_pages: int = 3) -> bool:
     except Exception as e:
         print(f"[ERRO] Falha ao ler PDF '{filepath}': {e}")
         return True  # Por segurança, assume que precisa de OCR
-
 
 def load_document(filepath: str, output_dir: str = r"C:\projetos\IA\my-mind\data\output"):
     """
