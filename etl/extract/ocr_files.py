@@ -1,13 +1,15 @@
 from pathlib import Path
 import numpy as np
 import easyocr
-from pdf2image import convert_from_path
 import torch
 import logging
 from PIL import Image
+import time
+import fitz
+from io import BytesIO
+from concurrent.futures import ProcessPoolExecutor, as_completed, TimeoutError
 
 logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
-
 
 def has_gpu() -> bool:
     """Verifica se CUDA GPU está disponível."""
@@ -30,7 +32,7 @@ def create_easyocr_reader(langs=['pt', 'en'], force_cpu=False) -> easyocr.Reader
     return easyocr.Reader(langs, gpu=use_gpu)
 
 
-def read_text_from_image(image_input, reader=None, output_dir: Path = None, image_name=None) -> str:
+def read_text_from_image(image_input, output_dir: Path = None, image_name=None) -> str:
     """
     Executa OCR em imagem (caminho ou numpy array) e salva resultado (cache simples).
 
@@ -69,14 +71,19 @@ def read_text_from_image(image_input, reader=None, output_dir: Path = None, imag
 
     # Executa OCR
     logging.info(f"[OCR] Processando: {image_path.name if image_path else 'imagem sem nome'}")
-    if reader is None:
-        reader = create_easyocr_reader(['pt', 'en'])
+
+    reader = create_easyocr_reader(['pt', 'en'])
     results = reader.readtext(img_np)
 
     text = " ".join([word for _, word, _ in results])
 
     # Salva resultado
-    save_text_output(text, image_path if image_path else image_name, Path(output_dir) if output_dir else None)
+    if output_dir and (image_path or image_name):
+        save_text_output(
+            text,
+            image_path if image_path else image_name,
+            Path(output_dir)
+        )
 
     return text
 
@@ -101,46 +108,61 @@ def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     return output_file
 
 
-def convert_pdf_to_text(pdf_path: str, output_dir: str, langs=['pt', 'en']) -> str:
-    """
-    Converte PDF em imagens, executa OCR página a página e salva texto completo.
+def _ocr_page_bytes(i, image_bytes, langs, force_cpu):
+    start = time.perf_counter()
+    reader = easyocr.Reader(langs, gpu=not force_cpu)
+    png = BytesIO(image_bytes)
+    img = Image.open(png).convert("L")
+    text = " ".join([w for _, w, _ in reader.readtext(np.array(img))])
+    return i, text, time.perf_counter() - start
 
-    Args:
-        pdf_path (str): Caminho do PDF.
-        output_dir (str): Diretório para salvar texto final.
-        langs (list): Idiomas para OCR.
-
-    Returns:
-        str: Texto extraído do PDF.
-    """
+def convert_pdf_to_text(pdf_path: str, output_dir: str, langs=['pt','en'], force_cpu=False) -> str:
     pdf_path = Path(pdf_path)
     output_dir = Path(output_dir)
-    output_file = output_dir / f"{pdf_path.stem}_ocr.md"
+    output_dir.mkdir(exist_ok=True, parents=True)
+    out_md = output_dir / f"{pdf_path.stem}_ocr.md"
+    if out_md.exists():
+        logging.info(f"[SKIP] já existe: {out_md.name}")
+        return out_md.read_text(encoding='utf-8')
 
-    # Usa cache se existir
-    if output_file.exists():
-        print(f"[SKIP] OCR já realizado. Pulando: {output_file.name}")
-        return output_file.read_text(encoding='utf-8')
+    doc = fitz.open(str(pdf_path))
+    page_texts = []
+    ocr_jobs = []
 
-    reader = create_easyocr_reader(langs)
+    # 1) extração nativa
+    for i, page in enumerate(doc, 1):
+        text = page.get_text().strip()
+        if text:
+            page_texts.append((i, text))
+        else:
+            pix = page.get_pixmap(matrix=fitz.Matrix(1,1), colorspace=fitz.csGRAY)
+            ocr_jobs.append((i, pix.tobytes()))
 
-    logging.info("Convertendo PDF em imagens (dpi=150)...")
-    images = convert_from_path(str(pdf_path), dpi=150)
+    # 2) OCR apenas nas páginas sem texto
+    if ocr_jobs:
+        can_gpu = torch.cuda.is_available() and not force_cpu
+        max_workers = 2 if can_gpu else min(8, len(ocr_jobs))
+        logging.info(f"OCR em {len(ocr_jobs)} páginas → workers={max_workers}, gpu={can_gpu}")
 
-    logging.info(f"Executando OCR em {len(images)} páginas...")
-    all_texts = []
+        with ProcessPoolExecutor(max_workers=max_workers) as exe:
+            futures = {
+                exe.submit(_ocr_page_bytes, i, img_bytes, langs, not can_gpu): i
+                for i, img_bytes in ocr_jobs
+            }
+            for fut in as_completed(futures):
+                i = futures[fut]
+                try:
+                    i, text, elapsed = fut.result(timeout=120)
+                    logging.info(f"Pág {i} OCR em {elapsed:.2f}s")
+                    page_texts.append((i, text))
+                except TimeoutError:
+                    logging.error(f"[TIMEOUT] OCR pág {i}")
+                except Exception as e:
+                    logging.error(f"[ERRO] OCR pág {i}: {e}")
 
-    for i, image in enumerate(images, 1):
-        logging.info(f"Pág {i}/{len(images)}")
-        try:
-            text = read_text_from_image(np.array(image), reader, output_dir, image_name=f"{pdf_path.stem}_page_{i}")
-        except RuntimeError as e:
-            logging.error(f"Erro na página {i}: {e}")
-            logging.info("Tentando fallback para CPU...")
-            reader = create_easyocr_reader(langs, force_cpu=True)
-            text = read_text_from_image(np.array(image), reader, output_dir, image_name=f"{pdf_path.stem}_page_{i}")
-        all_texts.append(text)
-
-    full_text = "\n\n".join(all_texts)
-
-    return save_text_output(full_text, pdf_path, output_dir).read_text(encoding='utf-8')
+    # 3) monta e salva
+    page_texts.sort(key=lambda x: x[0])
+    full = "\n\n".join(txt for _, txt in page_texts)
+    out_md.write_text(full, encoding='utf-8')
+    logging.info(f"[OK] Salvou em: {out_md}")
+    return full
