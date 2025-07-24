@@ -85,7 +85,6 @@ def read_text_from_image(image_input, output_dir: Path = None, image_name=None) 
 
     return text
 
-
 def save_text_output(text: str, source_path, output_dir: Path) -> Path:
     """
     Salva texto extraído em arquivo .md com nome baseado no arquivo original.
