@@ -23,10 +23,8 @@ Whether you're a <strong>researcher, writer, student, or knowledge worker</stron
     </td>
     <td style="vertical-align: top; width: 50%">
       <img src="obsidian_notes.png" alt="Obsidian notes example" width="100%">
-      <img src="pdfs.png" alt="Obsidian notes example" width="100%">
+      <img src="pdfs_notes.png" alt="Obsidian notes example" width="100%">
     </td>
-
-
   </tr>
 </table>
 
