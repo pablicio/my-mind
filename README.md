@@ -4,7 +4,7 @@
 
 <table>
   <tr>
-    <td style="vertical-align: top; padding-right: 20px; width: 60%">
+    <td style="vertical-align: top; padding-right: 20px; width: 50%">
 
 <strong>My Mind</strong> is a <strong>modular ETL pipeline</strong> and <strong>personal knowledge assistant</strong> designed to transform your entire information ecosystem into a <strong>searchable, LLM-augmented brain</strong>.
 
@@ -21,9 +21,12 @@ It <strong>ingests diverse sources</strong> such as <strong>PDFs (digital and sc
 
 Whether you're a <strong>researcher, writer, student, or knowledge worker</strong>, <strong>My Mind</strong> helps turn your scattered files into a <strong>cohesive, intelligent assistant</strong> — a <strong>searchable, contextualized reflection of how you think</strong>.
     </td>
-    <td style="vertical-align: top; width: 40%">
+    <td style="vertical-align: top; width: 50%">
       <img src="obsidian_notes.png" alt="Obsidian notes example" width="100%">
+      <img src="pdfs.png" alt="Obsidian notes example" width="100%">
     </td>
+
+
   </tr>
 </table>
 
