@@ -208,12 +208,6 @@ db = FAISS.from_texts(text_chunks, embeddings)
 
 ---
 
-## 🛣️ Roadmap
-
-Certainly! Here's a revised and realistic **🛣️ Roadmap** in English, aligned with your current directory structure and the fact that only the **`extract/`** module is complete:
-
----
-
 ## 🛣️ Roadmap (Phase by Phase)
 
 ### ✅ Phase 1 – Document Ingestion (Completed)
