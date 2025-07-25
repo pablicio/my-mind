@@ -2,14 +2,32 @@
 
 ## 🤖 LLM-Powered PDF & Notes ETL Pipeline (Python)
 
-**My Mind** is a modular **ETL pipeline** for extracting, cleaning, and transforming PDF documents (both digital and scanned) into structured **Markdown files**. These files can be used as contextual data for **LLM-powered applications** such as:
+<table>
+  <tr>
+    <td style="vertical-align: top; padding-right: 20px; width: 60%">
 
-* Retrieval-Augmented Generation (RAG)
-* Semantic search
-* Personal assistants or chatbots
-* Custom knowledge bases
+<strong>My Mind</strong> is a <strong>modular ETL pipeline</strong> and <strong>personal knowledge assistant</strong> designed to transform your entire information ecosystem into a <strong>searchable, LLM-augmented brain</strong>.
 
-Optimized for **personal knowledge management**, but easily extendable to **enterprise-scale document processing**.
+It <strong>ingests diverse sources</strong> such as <strong>PDFs (digital and scanned), DOCX files, Excel sheets, Notion exports, Obsidian vaults</strong>, and <strong>book summaries</strong>, then unifies them into <strong>clean, structured Markdown notes</strong>. These notes feed a <strong>Retrieval-Augmented Generation (RAG)</strong> pipeline, allowing an LLM to answer questions using <em>your own knowledge</em> as context — like a <strong>digital twin of your memory</strong>.
+
+<h4>🧠 Key use cases:</h4>
+<ul>
+  <li><strong>Ask questions</strong> about past notes, books, and documents</li>
+  <li><strong>Navigate your Obsidian vault</strong> using natural language</li>
+  <li><strong>Recall insights</strong> from PDFs and summaries you've read</li>
+  <li><strong>Centralize fragmented knowledge</strong> across multiple tools</li>
+  <li><strong>Build a second brain</strong> with <em>long-term memory and reasoning</em></li>
+</ul>
+
+Whether you're a <strong>researcher, writer, student, or knowledge worker</strong>, <strong>My Mind</strong> helps turn your scattered files into a <strong>cohesive, intelligent assistant</strong> — a <strong>searchable, contextualized reflection of how you think</strong>.
+    </td>
+    <td style="vertical-align: top; width: 40%">
+      <img src="obsidian_notes.png" alt="Obsidian notes example" width="100%">
+    </td>
+  </tr>
+</table>
+
+
 
 ---
 ## 🎯 Key Features
@@ -20,7 +38,7 @@ Optimized for **personal knowledge management**, but easily extendable to **ente
 * ✅ Intelligent file loader: detects OCR vs structured extraction
 * ✅ Modular ETL folders: `extract/`, `transform/`, `load/`, `utils/`
 * ✅ Saves cleaned, structured Markdown files with metadata
-* ✅ Optional embedding pipeline using **LangChain + OpenAI**
+* ✅ Optional embedding pipeline using **LangChain + LLMs**
 * ✅ Robust logging and error handling (PDF-by-PDF)
 * ✅ Automatic cleanup of temporary files
 
@@ -191,11 +209,74 @@ db = FAISS.from_texts(text_chunks, embeddings)
 
 ## 🛣️ Roadmap
 
-* [ ] Whisper support for audio-based PDFs
-* [ ] Web UI with file upload
-* [ ] Vector DB integration (Weaviate, Pinecone, Qdrant)
-* [ ] Obsidian vault export
-* [ ] Metadata tagging + chunk filtering
+Certainly! Here's a revised and realistic **🛣️ Roadmap** in English, aligned with your current directory structure and the fact that only the **`extract/`** module is complete:
+
+---
+
+## 🛣️ Roadmap (Phase by Phase)
+
+### ✅ Phase 1 – Document Ingestion (Completed)
+
+* [x] Smart loader logic: decides between structured text extraction or OCR
+* [x] OCR pipeline for scanned PDFs and images using EasyOCR
+* [x] Loader for structured formats (.txt, .docx, .epub, etc.)
+
+---
+
+### 🔄 Phase 2 – Text Transformation
+
+* [ ] `text_cleaner.py`: Normalize text (whitespace, symbols, line breaks)
+* [ ] `text_splitter.py`: Split cleaned text into semantic chunks
+
+---
+
+### 💾 Phase 3 – Output and Storage
+
+* [ ] `markdown_writer.py`: Save outputs as `.md` with frontmatter metadata
+* [ ] `json_writer.py`: Optional export to `.json`
+* [ ] `vector_writer.py`: Optional embedding generation (FAISS, Chroma, etc.)
+
+---
+
+### 🧠 Phase 4 – Training (Optional)
+
+* [ ] `dataset_preparation.py`: Convert markdown/text chunks into fine-tuning format
+* [ ] `train.py`: Finetune LLMs using curated datasets
+* [ ] `checkpoints/`: Save model checkpoints
+
+---
+
+### 🤖 Phase 5 – Inference & Retrieval
+
+* [ ] `rag_pipeline.py`: Combine retrieval + LLM generation (RAG)
+* [ ] `cli_app.py`: Build a Streamlit or FastAPI interface
+
+---
+
+### ⚙️ Phase 6 – Utilities and Config
+
+* [ ] Logging and error reporting (`logging_utils.py`)
+* [ ] Configuration management (`config_loader.py`, `.env`)
+* [ ] File and path handling (`file_utils.py`)
+* [ ] Metadata tagging and filtering logic (`sanitizers.py`)
+
+---
+
+### 🧪 Phase 7 – Testing & Evaluation
+
+* [ ] Create Jupyter notebooks for module testing (e.g., `ocr_eval.ipynb`)
+* [ ] Add unit/integration tests for each ETL stage
+* [ ] Performance benchmarking (OCR speed, chunk quality, etc.)
+
+---
+
+### 🌐 Phase 8 – UI and Integrations
+
+* [ ] Streamlit Web UI
+* [ ] File drag-and-drop upload (PDF, image, audio)
+* [ ] Display OCR'd or extracted text
+* [ ] Obsidian vault export for markdown outputs
+* [ ] Markdown preview of final .md output
 
 ---
 
