@@ -2,11 +2,25 @@ import os
 import json
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
-CHUNK_SIZE = 800
-CHUNK_OVERLAP = 100
-SEPARATORS = ["\n### ", "\n## ", "\n# ", "\n\n", ". ", " "]
+# Configurações para dividir o texto em chunks:
+CHUNK_SIZE = 800         # tamanho máximo de cada chunk em caracteres
+CHUNK_OVERLAP = 100      # sobreposição entre chunks para manter contexto
+SEPARATORS = ["\n### ", "\n## ", "\n# ", "\n\n", ". ", " "]  # separadores usados para divisão
 
 def process_markdown_file(file_path, base_dir):
+    """
+    Processa um arquivo Markdown:
+    - Lê o conteúdo do arquivo.
+    - Divide o texto em chunks utilizando RecursiveCharacterTextSplitter da LangChain,
+      que respeita separadores hierárquicos para cortes naturais.
+    - Para cada chunk, cria um dicionário com o conteúdo e metadados (nome do arquivo,
+      caminho relativo e índice do chunk).
+    Retorna a lista de dicionários de chunks.
+    
+    Parâmetros:
+    - file_path: caminho completo do arquivo markdown.
+    - base_dir: diretório base para cálculo do caminho relativo.
+    """
     with open(file_path, 'r', encoding='utf-8') as f:
         text = f.read()
 
@@ -35,6 +49,16 @@ def process_markdown_file(file_path, base_dir):
     return chunk_dicts
 
 def load_processed_files(output_jsonl):
+    """
+    Carrega os arquivos já processados lendo um arquivo JSONL de chunks previamente
+    salvos. Isso serve para evitar reprocessar arquivos que já tiveram seus chunks
+    gerados.
+
+    Retorna um conjunto com os caminhos relativos dos arquivos já processados.
+    
+    Parâmetro:
+    - output_jsonl: caminho do arquivo JSONL que armazena os chunks processados.
+    """
     processed_files = set()
     if os.path.exists(output_jsonl):
         with open(output_jsonl, 'r', encoding='utf-8') as f:
@@ -45,10 +69,23 @@ def load_processed_files(output_jsonl):
                     if source_file:
                         processed_files.add(source_file)
                 except json.JSONDecodeError:
+                    # Ignora linhas mal formatadas
                     continue
     return processed_files
 
 def chunk_markdown_folder(input_folder, output_jsonl="chunks_output.jsonl"):
+    """
+    Processa todos os arquivos Markdown dentro da pasta 'input_folder' (recursivamente).
+    Para cada arquivo .md que ainda não foi processado:
+    - Gera chunks usando process_markdown_file.
+    - Acumula os chunks para depois salvá-los no arquivo JSONL.
+    - Atualiza o arquivo JSONL com os novos chunks, sem sobrescrever os anteriores.
+    Exibe mensagens no console indicando os arquivos processados ou ignorados.
+
+    Parâmetros:
+    - input_folder: pasta raiz com arquivos Markdown a serem processados.
+    - output_jsonl: arquivo JSONL onde os chunks serão salvos (padrão: "chunks_output.jsonl").
+    """
     processed_files = load_processed_files(output_jsonl)
     all_chunks = []
 
@@ -64,10 +101,9 @@ def chunk_markdown_folder(input_folder, output_jsonl="chunks_output.jsonl"):
                 chunks = process_markdown_file(file_path, input_folder)
                 all_chunks.extend(chunks)
 
-    # Append os novos chunks ao arquivo jsonl
+    # Append os novos chunks ao arquivo jsonl, mantendo os anteriores
     with open(output_jsonl, 'a', encoding='utf-8') as f:
         for chunk in all_chunks:
             f.write(json.dumps(chunk, ensure_ascii=False) + '\n')
 
     print(f"\n✅ {len(all_chunks)} chunks novos salvos em: {output_jsonl}")
-
