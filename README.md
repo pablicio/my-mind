@@ -220,8 +220,8 @@ db = FAISS.from_texts(text_chunks, embeddings)
 
 ### 🔄 Phase 2 – Text Transformation
 
-* [ ] `text_cleaner.py`: Normalize text (whitespace, symbols, line breaks)
-* [ ] `text_splitter.py`: Split cleaned text into semantic chunks
+* [x] `text_cleaner.py`: Normalize text (whitespace, symbols, line breaks)
+* [x] `text_splitter.py`: Split cleaned text into semantic chunks
 
 ---
 
