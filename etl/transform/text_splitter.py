@@ -102,6 +102,10 @@ def chunk_markdown_folder(input_folder, output_jsonl="chunks_output.jsonl"):
                 all_chunks.extend(chunks)
 
     # Append os novos chunks ao arquivo jsonl, mantendo os anteriores
+    output_dir = os.path.dirname(output_jsonl)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+        
     with open(output_jsonl, 'a', encoding='utf-8') as f:
         for chunk in all_chunks:
             f.write(json.dumps(chunk, ensure_ascii=False) + '\n')
