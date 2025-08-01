@@ -50,25 +50,6 @@ class VectorWriter:
     def query_with_score(self, query_text: str, k: int = 5):
         return self.vectorstore.similarity_search_with_score(query_text, k=k)
     
-    # def load_and_add_chunks(self, json_path: str, max_chunks: int = 9000):
-    #     """
-    #     Lê um arquivo JSONL de chunks, carrega até `max_chunks` entradas e adiciona ao vetor.
-    #     """
-    #     if not os.path.exists(json_path):
-    #         raise FileNotFoundError(f"Arquivo não encontrado: {json_path}")
-
-    #     chunks = []
-    #     with open(json_path, "r", encoding="utf-8") as f:
-    #         for i, line in enumerate(f):
-    #             if i >= max_chunks:
-    #                 break
-    #             line = line.strip()
-    #             if line:
-    #                 chunks.append(json.loads(line))
-
-    #     self.add_chunks(chunks)
-    #     return chunks  # útil para passar pra métricas depois
-   
     def load_and_add_chunks(self, json_path: str, max_chunks: int = None):
         """
         Lê um arquivo JSONL de chunks, carrega até `max_chunks` entradas (ou todas se None)
