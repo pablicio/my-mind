@@ -196,7 +196,7 @@ Each file will be:
 
 ---
 
-### 💾 Phase 3 – Output and Storage
+### ✅ Phase 3 – Output and Storage
 
 * [x] `vector_reader.py`: Loading a previously saved vector database and performing semantic searches
 * [x] `vector_writer.py`: Optional embedding generation (FAISS, Chroma, etc.)
