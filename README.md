@@ -60,9 +60,8 @@ project_root/
 │   │   └── text_splitter.py        # Splits long texts into chunks
 │   │
 │   ├── load/                    # Output persistence
-│   │   ├── markdown_writer.py      # Saves as `.md` with metadata
+│   │   ├── vector_reader.py      # performing semantic searches
 │   │   ├── vector_writer.py        # Optional vector DB embedding (FAISS, Chroma)
-│   │   └── json_writer.py          # Optional JSON export
 │   │
 │   └── run_etl.py              # Main pipeline runner script
 │
@@ -110,27 +109,13 @@ cd my-mind
 pip install -r requirements.txt
 ```
 
-### 2. Set up `.env` (Optional for embeddings)
+### 2. Run main file
 
-Create a `.env` file in the root folder:
-
-```env
-OPENAI_API_KEY=sk-...
+```sh
+python main.py
 ```
 
-### 3. Configure the pipeline
 
-Edit the config file `config/settings.py`:
-
-```python
-input_dir = "input/"
-output_dir = "output/"
-ocr_languages = ['pt', 'en']
-chunk_size = 1000
-chunk_overlap = 100
-```
-
----
 
 ## 🔁 Pipeline Overview
 
@@ -184,20 +169,6 @@ Each file will be:
 
 ---
 
-## 🧠 Optional Embeddings (LangChain + OpenAI)
-
-Add this to generate embeddings:
-
-```python
-from langchain.embeddings import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
-
-embeddings = OpenAIEmbeddings()
-db = FAISS.from_texts(text_chunks, embeddings)
-```
-
----
-
 ## 🔍 Use Cases
 
 * 📖 Knowledge assistants over personal PDFs
@@ -227,9 +198,8 @@ db = FAISS.from_texts(text_chunks, embeddings)
 
 ### 💾 Phase 3 – Output and Storage
 
-* [ ] `markdown_writer.py`: Save outputs as `.md` with frontmatter metadata
-* [ ] `json_writer.py`: Optional export to `.json`
-* [ ] `vector_writer.py`: Optional embedding generation (FAISS, Chroma, etc.)
+* [x] `vector_reader.py`: Loading a previously saved vector database and performing semantic searches
+* [x] `vector_writer.py`: Optional embedding generation (FAISS, Chroma, etc.)
 
 ---
 
