@@ -76,6 +76,7 @@ project_root/
 │   └── checkpoints/               # Saved model weights
 │
 ├── inference/                   # RAG-ready serving interface
+│   ├── llms                 # Support multiple LLms
 │   ├── rag_pipeline.py             # Query + retrieval + generation logic
 │   └── cli_app.py                  # CLI or web interface (Streamlit/FastAPI)
 │
