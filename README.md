@@ -109,14 +109,6 @@ cd my-mind
 pip install -r requirements.txt
 ```
 
-### 2. Run main file
-
-```sh
-python main.py
-```
-
-
-
 ## 🔁 Pipeline Overview
 
 ### 📥 Extraction (`etl/extract/`)
