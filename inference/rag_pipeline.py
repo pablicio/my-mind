@@ -22,6 +22,8 @@ Regras:
 
 """
 
+MODEL_NAME = "tiny"
+
 class RagPipeline:
     def __init__(self, persist_directory: str = "./chroma_db"):
         self.vector_writer = VectorWriter(persist_directory=persist_directory)
@@ -53,7 +55,8 @@ class RagPipeline:
 
         prompt = self.build_prompt(query, context_chunks)
         try:
-            raw_answer = call_llm(prompt, max_tokens=max_tokens)
+            
+            raw_answer = call_llm(prompt, model_name=MODEL_NAME, max_tokens=max_tokens)
         except Exception as e:
             print(f"Erro ao gerar a resposta: {e}")
             return "⚠️ Ocorreu um erro ao tentar gerar a resposta."
