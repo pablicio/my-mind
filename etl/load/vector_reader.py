@@ -15,7 +15,7 @@ def query(query_text: str, k: int = 5) -> List[Document]:
     return vectorstore.similarity_search(query_text, k=k)
 
 # Consulta: busca os 5 documentos mais similares à query
-query_text = "Como ler livros de forma eficiente?"
+query_text = "O que é matemática"
 results = query(query_text, k=5)
 
 for doc in results:

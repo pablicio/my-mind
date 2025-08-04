@@ -4,6 +4,7 @@ from etl.transform.text_cleaner import process_markdown_folder
 from etl.transform.text_splitter import chunk_markdown_folder
 from etl.load.vector_writer import VectorWriter
 from utils.metrics import calculate_metrics_at_k
+from inference.cli_app import main as cli_app_main
 
 # Exemplo de uso
 if __name__ == '__main__':
@@ -28,6 +29,10 @@ if __name__ == '__main__':
     # chunk_markdown_folder(r"data\output\clean", r"data\output\chunks\chunks_output.json")
     
     ## Create Embeddings ###########################################################################################
-    vw = VectorWriter(persist_directory = "./data/output/embeddings/")
-    chunks = vw.load_and_add_chunks(json_path = "./data/output/chunks/chunks_output.json")
-    calculate_metrics_at_k(vw, chunks, k=5, sample_size=5000)
+    # vw = VectorWriter(persist_directory = "./data/output/embeddings/")
+    # chunks = vw.load_and_add_chunks(json_path = "./data/output/chunks/chunks_output.json")
+    # calculate_metrics_at_k(vw, chunks, k=5, sample_size=5000)
+    
+    
+    ## Create Inference test ###########################################################################################
+    cli_app_main()
