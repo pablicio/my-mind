@@ -8,7 +8,7 @@ def get_llm():
         _llm = pipeline(
             "text-generation",
             model="TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-            device_map="auto",  # ou "cpu" se não tiver GPU
+            device_map="auto",
             trust_remote_code=True
         )
     return _llm
