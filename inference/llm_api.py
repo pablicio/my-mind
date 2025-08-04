@@ -18,7 +18,7 @@ def call_llm(prompt: str, max_tokens: int = 256) -> str:
     response = llm(
         prompt.strip(),
         max_tokens=max_tokens,
-        temperature=0.1,
+        temperature=0.7,
         top_p=0.95,
         stop=["</s>", "Question:"]
     )
