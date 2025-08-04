@@ -2,6 +2,7 @@ import sys
 from inference.rag_pipeline import RagPipeline
 
 def main():
+    # Inicializa a pipeline com o diretório persistente de embeddings
     rag = RagPipeline(persist_directory="./data/output/embeddings/")
 
     print("=== RAG CLI App ===")
@@ -14,12 +15,19 @@ def main():
             sys.exit(0)
 
         if not query:
-            print("Por favor, digite uma pergunta válida.")
+            print("⚠️ Por favor, digite uma pergunta válida.\n")
             continue
 
-        resposta = rag.generate_answer(query, k=2)
-        print("\nResposta:\n", resposta)
-        print("\n" + "="*40 + "\n")
+        try:
+            # Geração da resposta com k e max_tokens configuráveis
+            resposta = rag.generate_answer(query, k=3, max_tokens=512)
+        except Exception as e:
+            print(f"❌ Erro ao gerar resposta: {e}")
+            continue
+
+        print("\nResposta:")
+        print(resposta)
+        print("\n" + "=" * 40 + "\n")
 
 if __name__ == "__main__":
     main()

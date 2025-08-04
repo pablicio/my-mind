@@ -44,22 +44,18 @@ class RagPipeline:
         """
         context = format_chunks_for_prompt(context_chunks)
         return PROMPT_GENERATION_TEMPLATE.format(context=context, query=query)
-
-    def generate_answer(self, query: str, k: int = 5) -> str:
-        """
-        Executa a pipeline completa de recuperação, geração e pós-processamento da resposta.
-        """
+    
+    def generate_answer(self, query: str, k: int = 5, max_tokens: int = 512) -> str:
         context_chunks = self.retrieve_context(query, k=k)
 
         if not context_chunks:
             return "⚠️ Desculpe, não encontrei informações relevantes na base de conhecimento."
 
-        # Gerar a resposta inicial
         prompt = self.build_prompt(query, context_chunks)
         try:
-            raw_answer = call_llm(prompt, 512)  # Aumentando o limite de tokens para respostas mais longas
+            raw_answer = call_llm(prompt, max_tokens=max_tokens)
         except Exception as e:
-            print(f"Erro ao gerar a resposta inicial: {e}")
-            return "⚠️ Ocorreu um erro ao tentar gerar a resposta. Por favor, tente novamente."
+            print(f"Erro ao gerar a resposta: {e}")
+            return "⚠️ Ocorreu um erro ao tentar gerar a resposta."
 
         return f"\n\n{raw_answer}"
