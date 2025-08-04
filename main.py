@@ -4,7 +4,7 @@ from etl.transform.text_cleaner import process_markdown_folder
 from etl.transform.text_splitter import chunk_markdown_folder
 from etl.load.vector_writer import VectorWriter
 from utils.metrics import calculate_metrics_at_k
-from inference.cli_app import main as cli_app_main
+from inference.llm_api import chat_app
 
 # Exemplo de uso
 if __name__ == '__main__':
@@ -35,4 +35,4 @@ if __name__ == '__main__':
     
     
     ## Create Inference test ###########################################################################################
-    cli_app_main()
+    chat_app()

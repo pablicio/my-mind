@@ -199,7 +199,7 @@ Each file will be:
 ### ✅ Phase 4 – Inference & Retrieval
 
 * [x] `rag_pipeline.py`: Combine retrieval + LLM generation (RAG)
-* [ ] `cli_app.py`: Build a Streamlit or FastAPI interface
+* [x] `cli_app.py`: Build a Streamlit or FastAPI interface
 
 ---
 
