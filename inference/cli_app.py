@@ -1,7 +1,7 @@
 import sys
 from inference.rag_pipeline import RagPipeline
 
-def main():
+def cli_app():
     # Inicializa a pipeline com o diretório persistente de embeddings
     rag = RagPipeline(persist_directory="./data/output/embeddings/")
 
@@ -29,5 +29,3 @@ def main():
         print(resposta)
         print("\n" + "=" * 40 + "\n")
 
-if __name__ == "__main__":
-    main()

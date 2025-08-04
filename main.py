@@ -4,7 +4,8 @@ from etl.transform.text_cleaner import process_markdown_folder
 from etl.transform.text_splitter import chunk_markdown_folder
 from etl.load.vector_writer import VectorWriter
 from utils.metrics import calculate_metrics_at_k
-from inference.streamlite import chat_app
+from inference.streamlite_app import chat_app
+from inference.cli_app import cli_app
 
 # Exemplo de uso
 if __name__ == '__main__':
@@ -35,4 +36,5 @@ if __name__ == '__main__':
     
     
     ## Create Inference test ###########################################################################################
-    chat_app()
+    # chat_app()
+    cli_app()
