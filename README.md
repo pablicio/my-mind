@@ -195,18 +195,19 @@ Each file will be:
 
 ---
 
-### 🧠 Phase 4 – Training (Optional)
+
+### ✅ Phase 4 – Inference & Retrieval
+
+* [x] `rag_pipeline.py`: Combine retrieval + LLM generation (RAG)
+* [ ] `cli_app.py`: Build a Streamlit or FastAPI interface
+
+---
+
+### 🧠 Phase 5 – Training (Optional)
 
 * [ ] `dataset_preparation.py`: Convert markdown/text chunks into fine-tuning format
 * [ ] `train.py`: Finetune LLMs using curated datasets
 * [ ] `checkpoints/`: Save model checkpoints
-
----
-
-### 🤖 Phase 5 – Inference & Retrieval
-
-* [ ] `rag_pipeline.py`: Combine retrieval + LLM generation (RAG)
-* [ ] `cli_app.py`: Build a Streamlit or FastAPI interface
 
 ---
 
