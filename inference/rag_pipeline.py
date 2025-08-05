@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 from utils.sanitizers import format_chunks_for_prompt
 from etl.load.vector_writer import VectorWriter
 from inference.llm_api import call_llm
