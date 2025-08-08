@@ -30,6 +30,6 @@ if __name__ == '__main__':
     run_extraction(paths)
     run_transformation(raw_dir, clean_dir, chunks_path)
     run_embedding_generation(chunks_path, embeddings_dir)
-    run_chunk_metrics(chunk_json_path=chunks_path, persist_directory=embeddings_dir, k=5, sample_size=500)
+    run_chunk_metrics(chunks_path, embeddings_dir, k=5, sample_size=500)
     run_embedding_metrics(label_key="source_file", limit=100)
     run_inference(mode="cli")
