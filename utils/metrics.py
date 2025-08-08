@@ -97,10 +97,6 @@ def calculate_chunk_metrics(
 
     return precision, recall, f1
 
-
-from typing import Optional, Tuple
-import numpy as np
-
 def calculate_embedding_metrics(
     embeddings: np.ndarray,
     labels_true: np.ndarray,

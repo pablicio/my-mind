@@ -1,5 +1,3 @@
-import os
-# os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from etl.extract.extract import run_extraction
 from etl.load.load import run_embedding_generation
 from etl.load.evaluate_load import run_embedding_metrics
@@ -12,13 +10,19 @@ from inference.inference import run_inference
 # =======================
 
 if __name__ == '__main__':
-    # Paths de entrada
+    # Paths de entrada, esses aqui são os caminhos onde os arquivos de entrada estão localizados
+    # Você pode adicionar mais caminhos conforme necessário
+    # É obrigatorio que sejam de arquivos existentes, caso contrário, o pipeline falhará
+    # Exemplo de caminhos, pdf, docx, txt, etc.
     paths = [
         r"D:\ARQUIVOS",
         r"D:\Workspace\NOTAS\GST"
     ]
     
     # Parâmetros de pasta
+    # Aque você pode passar os seus, porém se passsar esses aqui, já vai funcionar
+    # Esses caminhos são onde os arquivos de saída serão salvos
+    # São criados automaticamente, caso não existam
     raw_dir = r"data/output"
     clean_dir = r"data/output/clean"
     chunks_path = r"data/output/chunks/chunks_output.json"
