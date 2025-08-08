@@ -1,40 +1,35 @@
-# main.py
-from etl.extract.smart_loader import load_document
-from etl.transform.text_cleaner import process_markdown_folder
-from etl.transform.text_splitter import chunk_markdown_folder
-from etl.load.vector_writer import VectorWriter
-from utils.metrics import calculate_metrics_at_k
-from inference.streamlite_app import chat_app
-from inference.cli_app import cli_app
+import os
+os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+from etl.extract.extract import run_extraction
+from etl.load.load import run_embedding_generation
+from etl.load.evaluate_load import run_embedding_metrics
+from etl.load.evaluate_load import run_chunk_metrics
+from etl.transform.transform import run_transformation
+from inference.inference import run_inference
 
-# Exemplo de uso
+# =======================
+# Execução Principal
+# =======================
+
 if __name__ == '__main__':
+    # Paths de entrada
+    paths = [
+        r"D:\ARQUIVOS",
+        r"D:\Workspace\NOTAS\GST"
+    ]
     
-    # Pipeline de Extração #######################################################################################
-    
-    # Lista de diretórios ou arquivos
-    # paths = [
-    #     r"D:\ARQUIVOS",
-    #     r"D:\Workspace\NOTAS\GST"
-    # ]
+    # Parâmetros de pasta
+    raw_dir = r"data/output"
+    clean_dir = r"data/output/clean"
+    chunks_path = r"data/output/chunks/chunks_output.json"
+    embeddings_dir = r"data/output/embeddings/"
 
-    # Executa para cada caminho
-    # for path in paths:
-    #     load_document(path)
-
-    # Pipeline de Transformação ####################################################################################
-    # Clean data
-    # process_markdown_folder(r"data\output", r"data\output\clean")
-
-    # Creat Chunks #################################################################################################
-    # chunk_markdown_folder(r"data\output\clean", r"data\output\chunks\chunks_output.json")
-    
-    ## Create Embeddings ###########################################################################################
-    # vw = VectorWriter(persist_directory = "./data/output/embeddings/")
-    # chunks = vw.load_and_add_chunks(json_path = "./data/output/chunks/chunks_output.json")
-    # calculate_metrics_at_k(vw, chunks, k=5, sample_size=5000)
-    
-    
-    ## Create Inference test ###########################################################################################
-    chat_app()
-    # cli_app()
+    # ========================
+    # EXECUÇÃO DO PIPELINE
+    # ========================
+    run_extraction(paths)
+    run_transformation(raw_dir, clean_dir, chunks_path)
+    run_embedding_generation(chunks_path, embeddings_dir)
+    run_chunk_metrics(chunk_json_path=chunks_path, persist_directory=embeddings_dir, k=5, sample_size=500)
+    run_embedding_metrics(label_key="source_file", limit=100)
+    run_inference(mode="cli")

@@ -1,4 +1,5 @@
 from transformers import pipeline
+from langchain_community.llms import HuggingFacePipeline
 
 _llm = None
 

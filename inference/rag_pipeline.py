@@ -2,6 +2,7 @@ from typing import List
 from utils.sanitizers import format_chunks_for_prompt
 from etl.load.vector_writer import VectorWriter
 from inference.llm_api import call_llm
+from etl.load.vector_reader import EmbeddingSearcher
 
 # Definindo prompts como constantes para maior modularidade
 PROMPT_GENERATION_TEMPLATE = """
@@ -34,7 +35,8 @@ class RagPipeline:
         Adiciona tratamento de exceções para falhas na busca.
         """
         try:
-            documents = self.vector_writer.query(query, k=k)
+            searcher = EmbeddingSearcher()
+            documents = searcher.query(query, k=k)
             return [doc.page_content for doc in documents]
         except Exception as e:
             print(f"Erro na recuperação de contexto: {e}")
