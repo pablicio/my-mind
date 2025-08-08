@@ -1,5 +1,5 @@
 import os
-os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
+# os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from etl.extract.extract import run_extraction
 from etl.load.load import run_embedding_generation
 from etl.load.evaluate_load import run_embedding_metrics
