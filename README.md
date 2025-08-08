@@ -196,7 +196,6 @@ Each file will be:
 
 ---
 
-
 ### ✅ Phase 4 – Inference & Retrieval
 
 * [x] `rag_pipeline.py`: Combine retrieval + LLM generation (RAG)
@@ -205,11 +204,10 @@ Each file will be:
 
 ---
 
-### 🧠 Phase 5 – Training (Optional)
+### 🧪 Phase 5 – Testing & Evaluation
 
-* [ ] `dataset_preparation.py`: Convert markdown/text chunks into fine-tuning format
-* [ ] `train.py`: Finetune LLMs using curated datasets
-* [ ] `checkpoints/`: Save model checkpoints
+* [ ] Add unit/integration tests for each ETL stage
+* [x] Performance benchmarking (OCR speed, chunk quality, embedding quality, etc.)
 
 ---
 
@@ -222,11 +220,11 @@ Each file will be:
 
 ---
 
-### 🧪 Phase 7 – Testing & Evaluation
+### 🧠 Phase 7 – Training (Optional)
 
-* [ ] Create Jupyter notebooks for module testing (e.g., `ocr_eval.ipynb`)
-* [ ] Add unit/integration tests for each ETL stage
-* [ ] Performance benchmarking (OCR speed, chunk quality, etc.)
+* [ ] `dataset_preparation.py`: Convert markdown/text chunks into fine-tuning format
+* [ ] `train.py`: Finetune LLMs using curated datasets
+* [ ] `checkpoints/`: Save model checkpoints
 
 ---
 
