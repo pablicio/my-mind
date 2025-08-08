@@ -1,34 +1,16 @@
-langchain
-langchain-community
-langchain-huggingface
-chromadb
-openai==1.30.1
-tiktoken==0.6.0
-
-sentence-transformers==2.2.2
-
-chromadb
-pillow>=11.1.0,<12
-
-# OCR e PDF
 easyocr==1.7.1
-pdf2image==1.16.3
-PyMuPDF==1.24.1
-pytesseract==0.3.10
-
-# RAG e carregamento de documentos
-unstructured[all-docs]==0.11.6
-pypdf==4.1.0
-docx2txt==0.8
-python-docx==1.1.2
-
-# Transformações e manipulação
-pandas==2.2.2
-numpy==1.26.4
-
-# Suporte a paths, encoding e detecção
-charset-normalizer==3.3.2
-python-dotenv==1.0.1
-
-# Extra para dev
-rich==13.7.1
+fitz==0.0.1.dev2
+langchain==0.3.27
+langchain_chroma==0.2.5
+langchain_community==0.3.27
+langchain_core==0.3.74
+langchain_huggingface==0.3.1
+langdetect==1.0.9
+numpy==2.3.2
+Pillow==10.4.0
+PyPDF2==3.0.1
+scikit_learn==1.7.1
+scipy==1.16.1
+streamlit==1.37.1
+torch==2.7.1+cu118
+transformers==4.44.0
