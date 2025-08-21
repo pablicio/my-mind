@@ -1,0 +1,17 @@
+# pipeline_paths.yml
+
+# Paths de entrada
+# Esses são os caminhos onde os arquivos de entrada estão localizados
+# Você pode adicionar mais caminhos conforme necessário
+# É obrigatório que sejam arquivos existentes, caso contrário, o pipeline falhará
+paths:
+  - "D:/ARQUIVOS"
+  - "D:/Workspace/NOTAS/GST"
+
+# Parâmetros de pasta
+# Esses caminhos são onde os arquivos de saída serão salvos
+# São criados automaticamente caso não existam
+raw_dir: "data/output"
+clean_dir: "data/output/clean"
+chunks_path: "data/output/chunks/chunks_output.json"
+embeddings_dir: "data/output/embeddings"

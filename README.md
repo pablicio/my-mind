@@ -49,53 +49,54 @@ Whether you're a <strong>researcher, writer, student, or knowledge worker</stron
 
 ```
 project_root/
-├── etl/                         
-│   ├── extract/                 # File type detection, OCR and loader logic
-│   │   ├── loader_files.py         # Loads structured documents (Text, Docx, Epub, etc.)
-│   │   ├── ocr_files.py            # OCR pipeline for images and scanned PDFs
-│   │   └── smart_loader.py        # Main controller (decides loader vs OCR)
+├── etl/                         # ETL pipeline: extract, transform, load
+│   ├── extract/                 # File detection, OCR, and loading logic
+│   │   ├── loader_files.py      # Loads structured documents (Text, Docx, Epub, etc.)
+│   │   ├── ocr_files.py         # OCR pipeline for images and scanned PDFs
+│   │   └── smart_loader.py      # Main controller: decides between loader vs OCR
 │   │
-│   ├── transform/               # Text preprocessing
-│   │   ├── text_cleaner.py         # Cleans newlines, symbols, whitespace
-│   │   └── text_splitter.py        # Splits long texts into chunks
+│   ├── transform/               # Text preprocessing steps
+│   │   ├── text_cleaner.py      # Cleans newlines, symbols, whitespace
+│   │   └── text_splitter.py     # Splits long texts into manageable chunks
 │   │
-│   ├── load/                    # Output persistence
-│   │   ├── vector_reader.py      # performing semantic searches
-│   │   ├── vector_writer.py        # Optional vector DB embedding (FAISS, Chroma)
+│   ├── load/                    # Output persistence and vectorization
+│   │   ├── vector_reader.py     # Semantic search utilities
+│   │   ├── vector_writer.py     # Optional embeddings for vector DB (FAISS, Chroma)
 │   │
-│   └── run_etl.py              # Main pipeline runner script
+│   └── run_etl.py               # Main ETL runner script
 │
-├── data/                       
-│   ├── raw/                        # Input documents (PDFs, images)
-│   ├── processed/                 # Cleaned intermediate texts
-│   └── output/                    # Final `.md`, `.json`, embeddings, etc.
+├── data/                        # Storage for all data stages
+│   ├── raw/                     # Input documents (PDFs, images, etc.)
+│   ├── processed/               # Cleaned and intermediate text
+│   └── output/                  # Final outputs: `.md`, `.json`, embeddings, etc.
 │
 ├── training/                    # Optional fine-tuning support
-│   ├── dataset_preparation.py      # Converts extracted data into training-ready format
-│   ├── train.py                    # Fine-tunes models (e.g. LLaMA, GPT)
-│   └── checkpoints/               # Saved model weights
+│   ├── dataset_preparation.py   # Converts extracted data into model-ready datasets
+│   ├── train.py                 # Fine-tunes models (e.g., LLaMA, GPT)
+│   └── checkpoints/             # Saved model weights
 │
-├── inference/                   # RAG-ready serving interface
-│   ├── llms/                  # Support multiple LLms
-│   ├── rag_pipeline.py             # Query + retrieval + generation logic
-│   └── cli_app.py                  # CLI or web interface (Streamlit/FastAPI)
+├── inference/                   # RAG-ready inference and serving
+│   ├── llms/                    # Supports multiple LLMs
+│   ├── rag_pipeline.py          # Query + retrieval + generation logic
+│   └── cli_app.py               # CLI or web interface (Streamlit/FastAPI)
 │
-├── utils/                       # Reusable helpers
-│   ├── logging_utils.py
-│   ├── directory.py
-│   ├── metrics.py
-│   └── sanitizers.py
+├── utils/                       # Reusable helper utilities
+│   ├── logging_utils.py         # Custom logging helpers
+│   ├── directory.py             # Directory management helpers
+│   ├── metrics.py               # Metrics calculation and evaluation
+│   └── sanitizers.py            # Data sanitization utilities
 │
-├── config/                     
-│   ├── settings.py                 # Central pipeline settings
-│   └── .env                        # API keys and secrets
+├── config/                      # Pipeline configuration
+│   ├── settings.py              # Centralized pipeline settings
+│   ├── pipeline_paths.yml       # Input/output paths for all steps
+│   └── .env.example             # Example secrets and API keys
 │
-├── notebooks/                   # Jupyter notebooks for testing and exploration
-│   └── ocr_eval.ipynb
+├── notebooks/                   # Jupyter notebooks for experiments
+│   └── ocr_eval.ipynb           # OCR evaluation experiments
 │
-├── requirements.txt             
-├── README.md
-└── main.py                      # Entry point for full pipeline execution
+├── requirements.txt             # Python dependencies
+├── README.md                    # Project overview and instructions
+└── run.py                       # Entry point for full pipeline execution
 ```
 
 ---
@@ -150,7 +151,7 @@ processed: 2025-07-22
 ## 🧪 Run the Pipeline
 
 ```bash
-python main.py
+python run.py --run-extraction-exec --run-transformation-exec --run-embedding-generation-exec --run-chunk-metrics-exec --run-embedding-metrics-exec --run-inference-exec --export-settings
 ```
 
 Each file will be:
@@ -197,7 +198,7 @@ Each file will be:
 ---
 
 ### ✅ Phase 4 – Inference & Retrieval
-
+* [x] `run.py`: Call pipelines by CLI
 * [x] `rag_pipeline.py`: Combine retrieval + LLM generation (RAG)
 * [x] `cli_app.py`: Build a simple CLI app
 * [x] `chat_app.py`: Build a Streamlit or FastAPI interface
